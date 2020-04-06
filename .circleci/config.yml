@@ -11,7 +11,7 @@ commands:
       - run: which ruby || nix-env -iA nixpkgs.ruby
       - restore_cache:
           key: gems-v1-{{ checksum "Gemfile.lock" }}
-      - run: gem install bundler
+      - run: gem install bundler -v=2.1.4
       - run: bundle install
       - save_cache:
           key: gems-v1-{{ checksum "Gemfile.lock" }}
