@@ -6,6 +6,23 @@ orbs:
   shallow-checkout: expo/shallow-checkout@1.0.2
 
 commands:
+  install_ruby:
+    parameters:
+      version:
+        type: string
+    steps:
+      - run: wget -O ruby-install-0.7.0.tar.gz https://github.com/postmodern/ruby-install/archive/v0.7.0.tar.gz
+      - run: tar -xzvf ruby-install-0.7.0.tar.gz
+      - run: cd ruby-install-0.7.0/ && sudo make install
+      - run: rm -r ruby-install-0.7.0
+      - run: rm ruby-install-0.7.0.tar.gz
+      - restore_cache:
+          key: ruby-v1-{{ parameters.version }}
+      - run: ruby-install ruby {{ parameters.version }}
+      - save_cache:
+          key: ruby-v1-{{ parameters.version }}
+          paths:
+            - ~/.rubies
   install_fastlane:
     steps:
       - restore_cache:
@@ -782,7 +799,8 @@ jobs:
           working_directory: ~/expo/tools-public
       - restore_gradle_cache
       - decrypt_secrets_if_possible
-      - run: nix-env -iA nixpkgs.ruby
+      - install_ruby:
+          version: 2.6.3
       - install_fastlane
       - run:
           name: Decode release keystore
@@ -830,7 +848,8 @@ jobs:
       - setup
       - restore_cache:
           key: client-android-apk-{{ .Revision }}
-      - run: nix-env -iA nixpkgs.ruby
+      - install_ruby:
+          version: 2.6.3
       - install_fastlane
       - run:
           name: Decode release keystore
