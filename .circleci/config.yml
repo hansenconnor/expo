@@ -8,7 +8,6 @@ orbs:
 commands:
   install_fastlane:
     steps:
-      - run: which ruby || nix-env -iA nixpkgs.ruby
       - restore_cache:
           key: gems-v1-{{ checksum "Gemfile.lock" }}
       - run: gem install bundler -v=2.1.4
@@ -782,6 +781,7 @@ jobs:
           working_directory: ~/expo/tools-public
       - restore_gradle_cache
       - decrypt_secrets_if_possible
+      - run: nix-env -iA nixpkgs.ruby
       - install_fastlane
       - run:
           name: Decode release keystore
@@ -829,6 +829,7 @@ jobs:
       - setup
       - restore_cache:
           key: client-android-apk-{{ .Revision }}
+      - run: nix-env -iA nixpkgs.ruby
       - install_fastlane
       - run:
           name: Decode release keystore
