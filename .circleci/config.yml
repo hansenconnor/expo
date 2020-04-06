@@ -544,6 +544,7 @@ jobs:
       - nix_mac_volume
       - install_nix
       - setup
+      - install_fastlane
       - guard_sdk_tests
       - update_submodules
 
